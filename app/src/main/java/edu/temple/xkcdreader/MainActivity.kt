@@ -1,7 +1,12 @@
 package edu.temple.xkcdreader
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -34,11 +39,26 @@ class MainActivity : AppCompatActivity() {
         comicImageView = findViewById(R.id.comicImageView)
 
         fetchComicButton.setOnClickListener{
-            lifecycleScope.launch(Dispatchers.Main) {
-                fetchComic(comicNumberEditText.text.toString())
-            }
+//            lifecycleScope.launch(Dispatchers.Main) {
+//                fetchComic(comicNumberEditText.text.toString())
+//            }
+            val context : Context = this
+            val intent = Intent(
+                Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                Uri.parse("package:${context.packageName}") )
+            this.startActivity(intent)
         }
 
+        intent.action?.run{
+            if(this == Intent.ACTION_VIEW){
+                intent.data?.let{
+                    it.path?.substringBeforeLast('/')?.substringAfterLast('/').apply{
+                        Log.d("TEST", this.toString())
+                    }
+                }
+
+            }
+        }
     }
 
     suspend fun fetchComic(comicId: String) {
@@ -58,5 +78,4 @@ class MainActivity : AppCompatActivity() {
         Picasso.get().load(jsonObject.getString("img")).into(comicImageView)
 
     }
-
 }
