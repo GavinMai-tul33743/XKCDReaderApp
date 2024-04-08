@@ -52,8 +52,10 @@ class MainActivity : AppCompatActivity() {
         intent.action?.run{
             if(this == Intent.ACTION_VIEW){
                 intent.data?.let{
+                    Log.d("TEST", "REACHES HERE")
                     it.path?.substringBeforeLast('/')?.substringAfterLast('/').apply{
                         Log.d("TEST", this.toString())
+                        fetchComic(this.toString())
                     }
                 }
 
