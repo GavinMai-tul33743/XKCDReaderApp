@@ -49,18 +49,12 @@ class MainActivity : AppCompatActivity() {
             this.startActivity(intent)
         }
 
-        intent.action?.run{
-            if(this == Intent.ACTION_VIEW){
-                intent.data?.let{
-                    Log.d("TEST", "REACHES HERE")
-                    it.path?.substringBeforeLast('/')?.substringAfterLast('/').apply{
-                        Log.d("TEST", this.toString())
-                        fetchComic(this.toString())
-                    }
-                }
-
+        if (Intent.ACTION_VIEW == intent.action) {
+            lifecycleScope.launch {
+                fetchComic(intent.data?.path?.replace("/", "")!!)
             }
         }
+
     }
 
     suspend fun fetchComic(comicId: String) {
